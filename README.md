@@ -92,7 +92,7 @@ pip install -r requirements.txt
 model_files ディレクトリを新規に作成し、config/models.yml で定義されているGGUF形式のモデルファイルを配置してください。
 
 * **Jamba**: [mradermacher/AI21-Jamba-Mini-1.7-i1-GGUF](https://huggingface.co/mradermacher/AI21-Jamba-Mini-1.7-i1-GGUF)
-* **Gemma (Transformer)**: [google/gemma-2-9b-it-gguf](https://huggingface.co/google/gemma-2-9b-it)
+* **Gemma (Transformer)**: [google/gemma-2-9b-it-gguf](https://huggingface.co/google/gemma-3-4b-it-qat-q4_0-gguf)
 * **HRM**: [DavidAU/L3.1-Dark-Reasoning-Dark-Planet-Hermes-R1-Uncensored-Horror-Imatrix-MAX-8B-GGUF](https://huggingface.co/DavidAU/L3.1-Dark-Reasoning-Dark-Planet-Hermes-R1-Uncensored-Horror-Imatrix-MAX-8B-GGUF)
 * **(任意) LiquidS4**
 
@@ -103,7 +103,7 @@ model_files ディレクトリを新規に作成し、config/models.yml で定�
 ```bash
 # .envファイル
 JAMBA_MODEL_PATH="./model_files/AI21-Jamba-Mini-1.7.i1-Q2_K_S.gguf"
-TRANSFORMER_MODEL_PATH="./model_files/gemma-2-9b-it-q4_0.gguf"
+TRANSFORMER_MODEL_PATH="./model_files/gemma-3-4b-it-q4_0.gguf"
 HRM_MODEL_PATH="./model_files/L3.1-Dark-Reason-Dark-Plnt-Hrm-R1-Uncen-Hrr-Imtr-MAX-8B-D_AU-IQ3_XXS-imat.gguf"
 LIQUIDS4_MODEL_PATH=""
 ```

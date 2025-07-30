@@ -1,6 +1,5 @@
-# /hybrid_llm_system/jamba_test.py
-# Jambaモデルの動作を最小構成でテストするためのスクリプト (mypy対応版)
-# (エラー詳細表示のための修正版)
+# /hybrid_llm_system/transformer_test.py
+# Transformerモデルの動作を最小構成でテストするためのスクリプト (mypy対応版)
 
 import sys
 import os
@@ -10,46 +9,45 @@ from typing import List, Dict, Any, Optional
 
 def main() -> None:
     """
-    Jambaモデルの最小環境テストを実行するメイン関数
+    Transformerモデルの最小環境テストを実行するメイン関数
     """
-    print("--- Jambaモデルの最小環境テストを開始します ---")
-    
+    print("--- Transformerモデルの最小環境テストを開始します ---")
+
     model_path: Optional[str] = None
     try:
         # .envファイルから環境変数を読み込み
         load_dotenv()
-        model_path = os.getenv("JAMBA_MODEL_PATH")
+        model_path = os.getenv("TRANSFORMER_MODEL_PATH")
 
         if not model_path:
-            print("❌ エラー: .envファイルにJAMBA_MODEL_PATHが設定されていません。")
+            print("❌ エラー: .envファイルにTRANSFORMER_MODEL_PATHが設定されていません。")
             return
-
+        
         if not os.path.exists(model_path):
             print(f"❌ エラー: モデルファイルが見つかりません。パスを確認してください: {model_path}")
             return
 
         print(f"モデルパス: {model_path}")
 
-        # モデルの初期化 (chatmlフォーマット)
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+        # モデルの初期化 (gemmaフォーマット)
         llm = Llama(
             model_path=model_path,
             n_ctx=8192,
-            n_gpu_layers=-1, 
-            verbose=True,  # 詳細なログを出力する
-            chat_format="chatml"
+            n_gpu_layers=-1,  # -1で全てのレイヤーをGPUに割り当てる
+            verbose=False,
+            chat_format="gemma" 
         )
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         print("✅ モデルの初期化に成功しました。")
 
-        # (中略：以降の処理は変更なし)
+        # チャット形式のプロンプトを作成
         messages: List[Dict[str, str]] = [
-            {"role": "system", "content": "あなたは、誠実で優秀なAIアシスタントです。与えられた役割に応じて、創造的かつ的確にタスクを実行してください。"},
-            {"role": "user", "content": "AIの未来について、創造的で楽観的な物語を書いてください。"}
+            {"role": "system", "content": "You are a helpful and intelligent assistant for coding. Provide clean, efficient, and well-commented code."},
+            {"role": "user", "content": "Could you please implement a simple web server in Python?"}
         ]
-
+        
         print("\n--- 応答を生成します... ---")
         
+        # チャット補完APIを呼び出し
         response: Any = llm.create_chat_completion(
             messages=messages,
             max_tokens=1024,

@@ -1,6 +1,5 @@
-# /hybrid_llm_system/jamba_test.py
-# Jambaモデルの動作を最小構成でテストするためのスクリプト (mypy対応版)
-# (エラー詳細表示のための修正版)
+# /hybrid_llm_system/hrm_test.py
+# HRMモデルの動作を最小構成でテストするためのスクリプト (mypy対応版)
 
 import sys
 import os
@@ -10,20 +9,20 @@ from typing import List, Dict, Any, Optional
 
 def main() -> None:
     """
-    Jambaモデルの最小環境テストを実行するメイン関数
+    HRMモデルの最小環境テストを実行するメイン関数
     """
-    print("--- Jambaモデルの最小環境テストを開始します ---")
+    print("--- HRMモデルの最小環境テストを開始します ---")
     
     model_path: Optional[str] = None
     try:
         # .envファイルから環境変数を読み込み
         load_dotenv()
-        model_path = os.getenv("JAMBA_MODEL_PATH")
+        model_path = os.getenv("HRM_MODEL_PATH")
 
         if not model_path:
-            print("❌ エラー: .envファイルにJAMBA_MODEL_PATHが設定されていません。")
+            print("❌ エラー: .envファイルにHRM_MODEL_PATHが設定されていません。")
             return
-
+            
         if not os.path.exists(model_path):
             print(f"❌ エラー: モデルファイルが見つかりません。パスを確認してください: {model_path}")
             return
@@ -31,29 +30,28 @@ def main() -> None:
         print(f"モデルパス: {model_path}")
 
         # モデルの初期化 (chatmlフォーマット)
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         llm = Llama(
             model_path=model_path,
             n_ctx=8192,
-            n_gpu_layers=-1, 
-            verbose=True,  # 詳細なログを出力する
+            n_gpu_layers=-1,
+            verbose=False,
             chat_format="chatml"
         )
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         print("✅ モデルの初期化に成功しました。")
 
-        # (中略：以降の処理は変更なし)
+        # チャット形式のプロンプトを作成
         messages: List[Dict[str, str]] = [
-            {"role": "system", "content": "あなたは、誠実で優秀なAIアシスタントです。与えられた役割に応じて、創造的かつ的確にタスクを実行してください。"},
-            {"role": "user", "content": "AIの未来について、創造的で楽観的な物語を書いてください。"}
+            {"role": "system", "content": "You are a logical reasoner. Think step by step to solve the problem."},
+            {"role": "user", "content": "There are three suspects, A, B, and C. A says 'B is the culprit.' B says 'C is the culprit.' C says 'I am not the culprit.' Only one person is telling the truth, and there is only one culprit. Who is the culprit? Please explain your reasoning step by step."}
         ]
 
         print("\n--- 応答を生成します... ---")
         
+        # チャット補完APIを呼び出し
         response: Any = llm.create_chat_completion(
             messages=messages,
             max_tokens=1024,
-            temperature=0.7
+            temperature=0.2
         )
         
         print("\n--- 応答の生成に成功しました！ ---")
