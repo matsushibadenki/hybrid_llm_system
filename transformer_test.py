@@ -6,6 +6,7 @@ import os
 from llama_cpp import Llama
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
+from llama_cpp.llama_types import ChatCompletionRequestMessage # 追加
 
 def main() -> None:
     """
@@ -40,7 +41,7 @@ def main() -> None:
         print("✅ モデルの初期化に成功しました。")
 
         # チャット形式のプロンプトを作成
-        messages: List[Dict[str, str]] = [
+        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
             {"role": "system", "content": "You are a helpful and intelligent assistant for coding. Provide clean, efficient, and well-commented code."},
             {"role": "user", "content": "Could you please implement a simple web server in Python?"}
         ]

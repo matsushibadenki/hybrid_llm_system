@@ -6,6 +6,7 @@ import os
 from llama_cpp import Llama
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
+from llama_cpp.llama_types import ChatCompletionRequestMessage # 追加
 
 def main() -> None:
     """
@@ -47,7 +48,7 @@ def main() -> None:
         As machines become increasingly capable, tasks considered to require "intelligence" are often removed from the definition of AI, a phenomenon known as the AI effect. 
         For instance, optical character recognition is frequently excluded from things considered to be AI, having become a routine technology.
         """
-        messages: List[Dict[str, str]] = [
+        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
             {"role": "system", "content": "You are an expert in summarizing and analyzing long texts. Provide a clear, concise, and logical summary."},
             {"role": "user", "content": f"Please summarize the following text:\n\n{long_text}"}
         ]

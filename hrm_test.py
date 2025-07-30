@@ -6,6 +6,7 @@ import os
 from llama_cpp import Llama
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
+from llama_cpp.llama_types import ChatCompletionRequestMessage # 追加
 
 def main() -> None:
     """
@@ -40,7 +41,7 @@ def main() -> None:
         print("✅ モデルの初期化に成功しました。")
 
         # チャット形式のプロンプトを作成
-        messages: List[Dict[str, str]] = [
+        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
             {"role": "system", "content": "You are a logical reasoner. Think step by step to solve the problem."},
             {"role": "user", "content": "There are three suspects, A, B, and C. A says 'B is the culprit.' B says 'C is the culprit.' C says 'I am not the culprit.' Only one person is telling the truth, and there is only one culprit. Who is the culprit? Please explain your reasoning step by step."}
         ]

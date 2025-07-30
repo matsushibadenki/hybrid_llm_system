@@ -2,8 +2,10 @@
 # 最終報告を生成するリポーターエージェント
 
 from typing import List, Dict
+from llama_cpp.llama_types import ChatCompletionRequestMessage
 from domain.schemas import Plan, ExpertModel, SubTask
 from agents.base_agent import BaseAgent
+
 
 class ReporterAgent(BaseAgent):
     """
@@ -23,9 +25,9 @@ class ReporterAgent(BaseAgent):
                 context += f"結果: {task.result}\n\n"
         context += "---\n"
 
-        prompt = "上記の情報に基づき、ユーザーの元の要求に対する包括的で、首尾一貫した最終報告書を作成してください。"
+        prompt = f"{context}上記の情報に基づき、ユーザーの元の要求に対する包括的で、首尾一貫した最終報告書を作成してください。"
         
-        messages = [
+        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
             {"role": "system", "content": reporter_expert.system_prompt},
             {"role": "user", "content": prompt}
         ]

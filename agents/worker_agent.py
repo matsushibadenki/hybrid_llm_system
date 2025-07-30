@@ -2,6 +2,7 @@
 # サブタスクを実行するワーカーエージェント
 
 from typing import List, Dict, Any
+from llama_cpp.llama_types import ChatCompletionRequestMessage # 変更
 from domain.schemas import SubTask, ExpertModel
 from agents.base_agent import BaseAgent
 
@@ -15,7 +16,6 @@ class WorkerAgent(BaseAgent):
         """
         expert = self._find_expert(task.expert_name, experts)
         
-        # 依存関係のあるタスクの結果をコンテキストとして追加
         context = ""
         if task.dependencies:
             context += "先行タスクの結果:\n---\n"
@@ -27,7 +27,7 @@ class WorkerAgent(BaseAgent):
 
         prompt = f"{context}あなたのタスク:\n{task.description}"
         
-        messages = [
+        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
             {"role": "system", "content": expert.system_prompt},
             {"role": "user", "content": prompt}
         ]
