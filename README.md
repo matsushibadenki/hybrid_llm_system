@@ -92,7 +92,7 @@ pip install -r requirements.txt
 model_files ディレクトリを新規に作成し、config/models.yml で定義されているGGUF形式のモデルファイルを配置してください。
 
 * **Jamba**: [mradermacher/AI21-Jamba-Mini-1.7-i1-GGUF](https://huggingface.co/mradermacher/AI21-Jamba-Mini-1.7-i1-GGUF)
-* **Gemma (Transformer)**: [google/gemma-2-9b-it-gguf](https://huggingface.co/google/gemma-2-9b-it-gguf)
+* **Gemma (Transformer)**: [google/gemma-2-9b-it-gguf](https://huggingface.co/google/gemma-2-9b-it)
 * **HRM**: [DavidAU/L3.1-Dark-Reasoning-Dark-Planet-Hermes-R1-Uncensored-Horror-Imatrix-MAX-8B-GGUF](https://huggingface.co/DavidAU/L3.1-Dark-Reasoning-Dark-Planet-Hermes-R1-Uncensored-Horror-Imatrix-MAX-8B-GGUF)
 * **(任意) LiquidS4**
 
