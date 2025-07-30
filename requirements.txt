@@ -1,0 +1,20 @@
+# /hybrid_llm_system/requirements.txt
+# プロジェクトに必要なライブラリ
+
+# LangChain関連
+langchain
+langchain-community
+
+# Llama.cppのPythonバインディング
+# CPUのみの場合: pip install llama-cpp-python
+# GPU(NVIDIA)を利用する場合: CMAKE_ARGS="-DLLAMA_CUBLAS=on" FORCE_CMAKE=1 pip install llama-cpp-python
+llama-cpp-python
+
+# DIコンテナ
+dependency-injector
+
+# .envファイル読み込み
+python-dotenv
+
+# YAMLパーサー
+PyYAML
