@@ -16,39 +16,39 @@
 
 ## **2\. システムアーキテクチャ**
 
-graph TD  
-    A\["User Prompt"\] \--\> M\["Manager Agent (計画立案)"\]  
-    M \-- "Plan (SubTasks)" \--\> O\["Orchestrator (タスク実行管理)"\]  
-      
-    subgraph Workers \["Worker Agents (専門家チーム)"\]  
-        direction LR  
-        W1\["Jamba (対話・創造)"\]  
-        W2\["Transformer (コーディング)"\]  
-        W3\["HRM (論理推論)"\]  
-        Wn\["... (追加のエキスパート)"\]  
+graph TD
+    A["User Prompt"] --> M["Manager Agent (計画立案)"]
+    M -- "Plan (SubTasks)" --> O["Orchestrator (タスク実行管理)"]
+    
+    subgraph Workers ["Worker Agents (専門家チーム)"]
+        direction LR
+        W1["Jamba (対話・創造)"]
+        W2["Transformer (コーディング)"]
+        W3["HRM (論理推論)"]
+        Wn["... (追加のエキスパート)"]
     end
 
-    O \-- "Task 1" \--\> W1  
-    O \-- "Task 2" \--\> W2  
-    O \-- "Task 3" \--\> W3  
-      
-    subgraph Results \["Task Results"\]  
-        R1\["Result 1"\]  
-        R2\["Result 2"\]  
-        R3\["Result 3"\]  
+    O -- "Task 1" --> W1
+    O -- "Task 2" --> W2
+    O -- "Task 3" --> W3
+    
+    subgraph Results ["Task Results"]
+        R1["Result 1"]
+        R2["Result 2"]
+        R3["Result 3"]
     end
 
-    W1 \--\> R1  
-    W2 \--\> R2  
-    W3 \--\> R3
+    W1 --> R1
+    W2 --> R2
+    W3 --> R3
 
-    R1 \--\> O  
-    R2 \--\> O  
-    R3 \--\> O
+    R1 --> O
+    R2 --> O
+    R3 --> O
 
-    O \-- "All Results" \--\> R\["Reporter Agent (最終報告)"\]  
-    R \--\> F\["Final Response"\]
-
+    O -- "All Results" --> R["Reporter Agent (最終報告)"]
+    R --> F["Final Response"]
+    
 ## **3\. ディレクトリ構成**
 
 /hybrid\_llm\_system  
