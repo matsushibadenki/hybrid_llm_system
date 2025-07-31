@@ -16,10 +16,10 @@ class ManagerAgent(BaseAgent):
     """
     def __init__(self, model_loader: ModelLoaderService):
         super().__init__(model_loader)
-        self.manager_expert_name = "Jamba"
+        self.manager_expert_name = "Transformer"
 
     def _create_performance_summary(self, workspace: GlobalWorkspace) -> str:
-        """思考履歴からエキスパートの成功・失敗回数を集計して文字列を生成する"""
+        # (この関数に変更はありません)
         success_counts: Dict[str, int] = {}
         failure_counts: Dict[str, int] = {}
 
@@ -52,37 +52,31 @@ class ManagerAgent(BaseAgent):
         failed_plan: Optional[Plan] = None,
         validation_error: Optional[str] = None
     ) -> Plan:
-        """
-        プロンプトと利用可能なエキスパートリストから実行計画を生成する。
-        失敗した計画や検証エラーが与えられた場合、それを修正する。
-        """
         manager_expert = self._find_expert(self.manager_expert_name, experts)
         expert_descriptions = self._format_expert_descriptions(experts)
 
         system_prompt = f"""
-あなたは非常に優秀なAIプロジェクトマネージャーです。ユーザーの要求を分析し、それを達成するための実行計画をJSON形式で立案してください。
+あなたはAIプロジェクトマネージャーです。ユーザーの要求を分析し、実行計画をJSON形式で立案してください。
 
-**指示:**
-1.  **要求分析**: ユーザーの要求が単純な挨拶や短い質疑応答の場合、タスクは1つだけにし、`expert_name`は`jamba`に設定してください。
-2.  **タスク分解**: ユーザーの要求が複雑な場合のみ、複数のサブタスクに分解してください。
-3.  **エキスパート選定**: 各サブタスクに最も適した専門家を割り当ててください。**過去の実行実績も参考にしてください。**
-4.  **依存関係**: 依存関係は`dependencies`に先行タスクの`task_id`リストを指定してください。
-5.  **最終報告**: 複雑なタスクの最後には必ず`expert_name`が`reporter`のタスクを配置してください。
-6.  **出力形式**: 出力は**JSON形式のみ**とし、説明などの余計なテキストは絶対に含めないでください。
+### 指示
+- **単純なタスク**: 挨拶や簡単な質問には、タスクを1つだけ生成し、担当者は「{self.manager_expert_name}」にしてください。
+- **複雑なタスク**: 複数のステップが必要な場合は、タスクを分解し、最適なエキスパートを割り当ててください。
+- **最終報告**: 複数のタスクがある場合、最後には必ず担当者が「Reporter」のタスクを追加してください。
+- **出力形式**: **絶対にJSON形式のみで出力してください。説明文や前置きは一切不要です。**
 """
+        
         performance_summary = self._create_performance_summary(workspace)
         system_prompt += performance_summary
         
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始 (正しいロジックを復元)◾️◾️◾◾️◾️◾️◾️◾️◾️◾️
         if validation_error:
             system_prompt += f"""
-**重要: 計画の構造的欠陥の修正**
-前回の計画には以下の構造的な問題がありました。このエラーを解決し、論理的に正しい新しい計画を生成してください。
+**【最重要】前回の計画の修正指示**
+前回の計画には以下の構造的な問題がありました。このエラーを解決する、論理的に正しい新しい計画を生成してください。
 - **検証エラー:** {validation_error}
 """
 
         if failed_plan:
-            failure_context = "\n**重要: 計画の実行失敗**\n前回の計画は実行に失敗しました。以下の失敗情報を分析し、ユーザーの元の要求を達成するための新しい計画を立案してください。同じ失敗を繰り返さないように、根本的な原因を考えて代替アプローチを提案してください。\n"
+            failure_context = "\n**【最重要】前回の計画の失敗**\n前回の計画は実行に失敗しました。失敗情報を分析し、ユーザーの元の要求を達成するための新しい計画を立案してください。同じ失敗を繰り返さないように、根本原因を考えて代替アプローチを提案してください。\n"
             failure_context += "--- 失敗したタスクの情報 ---\n"
             for task in failed_plan.tasks:
                 if task.status == 'failed':
@@ -90,13 +84,12 @@ class ManagerAgent(BaseAgent):
                     failure_context += f"  - 失敗理由: {task.result}\n"
             failure_context += "----------------------------\n"
             system_prompt += failure_context
-        # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり (正しいロジックを復元)◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         
         system_prompt += f"""
-**利用可能なエキスパート:**
+### 利用可能なエキスパート
 {expert_descriptions}
 
-**JSON出力フォーマット:**
+### JSON出力フォーマット
 {{
   "tasks": [
     {{
@@ -122,11 +115,15 @@ class ManagerAgent(BaseAgent):
             original_prompt_for_plan = failed_plan.original_prompt
 
         try:
-            json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
-            if json_match:
-                plan_json_str = json_match.group(0)
+            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+            # より堅牢なJSON抽出ロジックに変更
+            start_index = raw_response.find('{')
+            end_index = raw_response.rfind('}')
+            if start_index != -1 and end_index != -1 and start_index < end_index:
+                plan_json_str = raw_response[start_index:end_index+1]
             else:
-                plan_json_str = raw_response
+                plan_json_str = raw_response # 抽出失敗時はそのまま試す
+            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
 
             plan_data = json.loads(plan_json_str)
             tasks = [SubTask(**task_data) for task_data in plan_data.get("tasks", [])]

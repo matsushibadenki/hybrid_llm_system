@@ -18,3 +18,9 @@ python-dotenv
 
 # YAMLパーサー
 PyYAML
+
+# 拡散モデル用ライブラリ
+diffusers
+transformers
+torch
+accelerate

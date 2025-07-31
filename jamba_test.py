@@ -7,7 +7,7 @@ import os
 from llama_cpp import Llama
 from dotenv import load_dotenv
 from typing import List, Dict, Any, Optional
-from llama_cpp.llama_types import ChatCompletionRequestMessage # 追加
+from llama_cpp.llama_types import ChatCompletionRequestMessage
 
 def main() -> None:
     """
@@ -17,7 +17,6 @@ def main() -> None:
     
     model_path: Optional[str] = None
     try:
-        # .envファイルから環境変数を読み込み
         load_dotenv()
         model_path = os.getenv("JAMBA_MODEL_PATH")
 
@@ -31,29 +30,28 @@ def main() -> None:
 
         print(f"モデルパス: {model_path}")
 
-        # モデルの初期化 (chatmlフォーマット)
         # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+        # モデルの初期化 (CPU実行、詳細ログ有効)
         llm = Llama(
             model_path=model_path,
-            n_ctx=8192,
-            n_gpu_layers=-1, 
-            verbose=True,  # 詳細なログを出力する
+            n_ctx=4096,      # コンテキストサイズを小さめに設定
+            n_gpu_layers=0,  # CPUで実行
+            verbose=True,    # 詳細なログを出力する
             chat_format="chatml"
         )
         # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         print("✅ モデルの初期化に成功しました。")
 
-        # チャット形式のプロンプトを作成
-        messages: List[ChatCompletionRequestMessage] = [ # 型を修正
-            {"role": "system", "content": "あなたは、誠実で優秀なAIアシスタントです。与えられた役割に応じて、創造的かつ的確にタスクを実行してください。"},
-            {"role": "user", "content": "AIの未来について、創造的で楽観的な物語を書いてください。"}
+        messages: List[ChatCompletionRequestMessage] = [
+            {"role": "system", "content": "あなたは、誠実で優秀なAIアシスタントです。"},
+            {"role": "user", "content": "こんにちは"}
         ]
 
         print("\n--- 応答を生成します... ---")
         
         response: Any = llm.create_chat_completion(
             messages=messages,
-            max_tokens=1024,
+            max_tokens=256,
             temperature=0.7
         )
         
@@ -76,6 +74,8 @@ def main() -> None:
 
     except Exception as e:
         print(f"\n❌ テスト中に予期せぬエラーが発生しました: {e}")
+        import traceback
+        traceback.print_exc()
 
     print("\n--- テストを終了します ---")
 

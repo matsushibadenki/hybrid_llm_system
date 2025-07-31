@@ -2,8 +2,14 @@
 # システムのデータ構造定義ファイル
 
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict, Any
+# ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+from typing import List, Optional, Dict, Any, Union, TYPE_CHECKING
 from llama_cpp import Llama
+
+# TYPE_CHECKINGブロックはmypy実行時にのみインポートされる
+if TYPE_CHECKING:
+    from diffusers import DiffusionPipeline
+# ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
 
 @dataclass
 class ExpertModel:
@@ -12,11 +18,15 @@ class ExpertModel:
     """
     name: str
     description: str
-    model_path: str
+    model_path: Optional[str] # GGUFモデルのパス
+    model_id: Optional[str]   # 拡散モデルのHugging Face ID
     chat_format: str
     system_prompt: str
     keywords: List[str] = field(default_factory=list)
-    instance: Optional[Llama] = None
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+    # 循環インポートを避けるため、型を文字列で指定
+    instance: Optional[Union[Llama, "DiffusionPipeline"]] = None
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
     is_loaded: bool = False
 
 @dataclass

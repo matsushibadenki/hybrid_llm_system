@@ -2,7 +2,7 @@
 # 全エージェントの基底クラス
 
 from abc import ABC, abstractmethod
-from typing import List, Any, Optional
+from typing import List, Any, Optional, cast
 from llama_cpp import Llama
 from llama_cpp.llama_types import ChatCompletionRequestMessage
 from domain.schemas import ExpertModel
@@ -22,12 +22,12 @@ class BaseAgent(ABC):
 
     def _query_llm(self, expert: ExpertModel, messages: List[ChatCompletionRequestMessage]) -> str:
         """LLMに問い合わせを実行する共通メソッド"""
-        llm: Llama = self.model_loader.load_expert(expert)
+        llm = cast(Llama, self.model_loader.load_expert(expert))
         
         output: Any = llm.create_chat_completion(
             messages=messages,
             max_tokens=4096,
-            temperature=0.2,
+            temperature=0.1,
         )
         
         response_text: Optional[str] = None

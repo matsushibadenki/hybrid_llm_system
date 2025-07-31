@@ -6,17 +6,22 @@ worker_experts:
   jamba:
     name: "Jamba"
     description: "ユーザーとの対話、創造的な文章生成、タスク計画の立案など、幅広いコミュニケーションタスクを担当する汎用エキスパート。"
-    model_path_env: "JAMBA_MODEL_PATH"
-    chat_format: "chatml"
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+    model_path_env: "TRANSFORMER_MODEL_PATH" # Jambaの代わりにGemmaモデルを使用
+    chat_format: "gemma"                    # フォーマットもGemmaに合わせる
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
     system_prompt: "あなたは、誠実で優秀なAIアシスタントです。与えられた役割に応じて、創造的かつ的確にタスクを実行してください。"
 
   reporter:
     name: "Reporter" # 名前を役割に合わせて一意に変更
     description: "全エキスパートの成果を統合し、首尾一貫した最終報告書を作成するテクニカルライター。"
-    model_path_env: "JAMBA_MODEL_PATH" # Jambaモデルを報告書作成に使用
-    chat_format: "chatml"
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+    model_path_env: "TRANSFORMER_MODEL_PATH" # Jambaの代わりにGemmaモデルを使用
+    chat_format: "gemma"                    # フォーマットもGemmaに合わせる
+    # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
     system_prompt: "あなたは優秀なテクニカルライターです。提供された全タスクの結果を元に、ユーザーの元の要求に対する包括的で分かりやすい最終報告書を作成してください。"
 
+  # ... liquids4, hrm, transformer, visualizer の定義は変更なし ...
   liquids4:
     name: "LiquidS4"
     description: "長文の読解、要約、分析、そして長期的な文脈の記憶保持を得意とするエキスパート。"
@@ -37,3 +42,10 @@ worker_experts:
     model_path_env: "TRANSFORMER_MODEL_PATH"
     chat_format: "gemma"
     system_prompt: "You are a helpful and intelligent assistant for coding. Provide clean, efficient, and well-commented code."
+
+  visualizer:
+    name: "Visualizer"
+    description: "テキスト記述（プロンプト）から高品質な画像を生成する視覚化のエキスパート。アイデアを具体的に視覚化したり、思考の補助としてイメージを生成したりするのに使用します。"
+    model_id: "stabilityai/stable-diffusion-xl-base-1.0"
+    chat_format: "diffusion"
+    system_prompt: "You are a creative visualizer. Generate an image based on the user's prompt."
