@@ -7,8 +7,8 @@ worker_experts:
     name: "Jamba"
     description: "ユーザーとの対話、創造的な文章生成、タスク計画の立案など、幅広いコミュニケーションタスクを担当する汎用エキスパート。"
     # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
-    model_path_env: "TRANSFORMER_MODEL_PATH" # Jambaの代わりにGemmaモデルを使用
-    chat_format: "gemma"                    # フォーマットもGemmaに合わせる
+    model_path_env: "JAMBA_MODEL_PATH"
+    chat_format: "chatml"
     # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
     system_prompt: "あなたは、誠実で優秀なAIアシスタントです。与えられた役割に応じて、創造的かつ的確にタスクを実行してください。"
 
@@ -16,8 +16,8 @@ worker_experts:
     name: "Reporter" # 名前を役割に合わせて一意に変更
     description: "全エキスパートの成果を統合し、首尾一貫した最終報告書を作成するテクニカルライター。"
     # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
-    model_path_env: "TRANSFORMER_MODEL_PATH" # Jambaの代わりにGemmaモデルを使用
-    chat_format: "gemma"                    # フォーマットもGemmaに合わせる
+    model_path_env: "JAMBA_MODEL_PATH"      # こちらもJambaモデルを利用
+    chat_format: "chatml"                   # フォーマットも合わせる
     # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
     system_prompt: "あなたは優秀なテクニカルライターです。提供された全タスクの結果を元に、ユーザーの元の要求に対する包括的で分かりやすい最終報告書を作成してください。"
 

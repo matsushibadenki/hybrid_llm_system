@@ -59,17 +59,17 @@ class ModelLoaderService:
                     raise ValueError("LLMのmodel_pathが設定されていません。")
                 
                 # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
-                # クラッシュ対策としてuse_mmap=Falseを追加し、n_ctxを調整
+                # クラッシュ対策としてパラメータをさらに安全な値に変更
                 instance = Llama(
                     model_path=expert.model_path,
                     n_gpu_layers=0,
                     n_ctx=4096,
-                    n_batch=512,
-                    use_mmap=False, # メモリマップを無効化して安定性を向上
-                    verbose=False,
+                    n_batch=256,      # 安定性のためバッチサイズを削減
+                    use_mmap=False,   # メモリマップは引き続き無効
+                    verbose=True,     # llama.cppからの詳細ログを有効化
                     chat_format=expert.chat_format
                 )
-                # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+                # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
                 print(f"✅ LLM '{expert.name}' の準備が完了しました。 (フォーマット: {expert.chat_format})")
 
             expert.instance = instance

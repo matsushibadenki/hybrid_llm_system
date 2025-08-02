@@ -16,7 +16,7 @@ class ManagerAgent(BaseAgent):
     """
     def __init__(self, model_loader: ModelLoaderService):
         super().__init__(model_loader)
-        self.manager_expert_name = "Transformer"
+        self.manager_expert_name = "Jamba"
 
     def _create_performance_summary(self, workspace: GlobalWorkspace) -> str:
         # (この関数に変更はありません)
@@ -59,7 +59,9 @@ class ManagerAgent(BaseAgent):
 あなたはAIプロジェクトマネージャーです。ユーザーの要求を分析し、実行計画をJSON形式で立案してください。
 
 ### 指示
-- **単純なタスク**: 挨拶や簡単な質問には、タスクを1つだけ生成し、担当者は「{self.manager_expert_name}」にしてください。
+# ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+- **単純なタスク**: 挨拶や簡単な質問には、タスクを1つだけ生成し、担当者は「Jamba」にしてください。
+# ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
 - **複雑なタスク**: 複数のステップが必要な場合は、タスクを分解し、最適なエキスパートを割り当ててください。
 - **最終報告**: 複数のタスクがある場合、最後には必ず担当者が「Reporter」のタスクを追加してください。
 - **出力形式**: **絶対にJSON形式のみで出力してください。説明文や前置きは一切不要です。**
@@ -115,15 +117,12 @@ class ManagerAgent(BaseAgent):
             original_prompt_for_plan = failed_plan.original_prompt
 
         try:
-            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
-            # より堅牢なJSON抽出ロジックに変更
             start_index = raw_response.find('{')
             end_index = raw_response.rfind('}')
             if start_index != -1 and end_index != -1 and start_index < end_index:
                 plan_json_str = raw_response[start_index:end_index+1]
             else:
-                plan_json_str = raw_response # 抽出失敗時はそのまま試す
-            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+                plan_json_str = raw_response
 
             plan_data = json.loads(plan_json_str)
             tasks = [SubTask(**task_data) for task_data in plan_data.get("tasks", [])]

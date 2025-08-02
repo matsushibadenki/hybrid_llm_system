@@ -27,7 +27,9 @@ class BaseAgent(ABC):
         output: Any = llm.create_chat_completion(
             messages=messages,
             max_tokens=4096,
-            temperature=0.1,
+            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
+            temperature=0.1, # 安定性のためデバッグ中は値を下げる
+            # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
         )
         
         response_text: Optional[str] = None
