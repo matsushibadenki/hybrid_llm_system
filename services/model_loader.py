@@ -59,14 +59,14 @@ class ModelLoaderService:
                     raise ValueError("LLMのmodel_pathが設定されていません。")
                 
                 # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↓修正開始◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
-                # クラッシュ対策としてパラメータをさらに安全な値に変更
+                # Metal GPUを最大限活用し、安定性を確保するための最終的なパラメータ設定
                 instance = Llama(
                     model_path=expert.model_path,
-                    n_gpu_layers=0,
+                    n_gpu_layers=-1,  # すべてのレイヤーをGPUにオフロードしてMetalを活用
                     n_ctx=4096,
-                    n_batch=256,      # 安定性のためバッチサイズを削減
+                    n_batch=512,      # GPU利用を前提にバッチサイズを戻す
                     use_mmap=False,   # メモリマップは引き続き無効
-                    verbose=True,     # llama.cppからの詳細ログを有効化
+                    verbose=False,
                     chat_format=expert.chat_format
                 )
                 # ◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️↑修正終わり◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️◾️
